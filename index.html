@@ -7,9 +7,25 @@
     <title>Document</title>
 </head>
 <style>
-
+    body{
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        /* align-items: center; */
+    }
+  
 </style>
 <body>
-    
+    <canvas width="600px" height="400px" id="cnvs">
+
+    </canvas>
 </body>
+<script>
+    const canvasElem = document.getElementById('cnvs');
+    const ctx = canvasElem.getContext('2d');
+
+    ctx.strokeRect(0,0,600,400);
+
+</script>
 </html>
