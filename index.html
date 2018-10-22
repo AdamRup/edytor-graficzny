@@ -38,7 +38,7 @@
     <canvas width="1000px" height="700px" id="paint"></canvas>
     <div class="percent-bar" id="kontrast">Invert Colors</div>
     <div class="percent-bar" id="czarno-biale">Grayscale</div>
-    <div class="percent-bar">Mirror</div>
+    <div class="percent-bar" id="clear">Clear</div>
     <script>
         const canvasElem = document.querySelector('#paint');
         const ctx = canvasElem.getContext('2d');
@@ -46,22 +46,28 @@
 
         const invertColors = document.getElementById('kontrast');
         const fromBlackToWhite = document.getElementById('czarno-biale');
+        const clearImage = document.getElementById('clear');
 
+
+
+        //zmiana kolorów na przeciwne
         invertColors.addEventListener('click',
-            function drawImage1(ej) {
+            function drawImage1() {
                 let imgData = ctx.getImageData(0, 0, img.width, img.height);
                 let data = imgData.data;
                 for (let i = 0; i < imgData.data.length; i += 4) {
                     imgData.data[i] = 255 - imgData.data[i];//red
                     imgData.data[i + 1] = 255 - imgData.data[i + 1];//green
-                    imgData.data[i + 2] = 255 - imgData.data[i + 2];//blue
+                    imgData.data[i + 2] = 255 - imgData.data[i + 2]*0.5;//blue
                 }
 
                 ctx.putImageData(imgData, 0, 0);
             })
 
+        
+        //zmiana na czarnobiałe
         fromBlackToWhite.addEventListener('click',
-            function drawImage2(ej){
+            function drawImage2(){
                 let imgData = ctx.getImageData(0, 0, img.width, img.height);
                 let data = imgData.data;
                 for (let i = 0; i < imgData.data.length; i += 4) {
@@ -74,6 +80,15 @@
                 ctx.putImageData(imgData, 0, 0);
             })
 
+        
+        //Wyczyszczenie canvasa
+        clearImage.addEventListener('click', 
+            function clearImg(){
+                ctx.clearRect(0,0, canvasElem.width, canvasElem.height);
+            }, false)
+
+        
+        //ładowanie zdjęcia
         img.onload = function () {
             ctx.drawImage(img, 0, 0);
         };
