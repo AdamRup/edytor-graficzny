@@ -23,7 +23,7 @@
         display: block;
     }
 
-    .percent-bar {
+    .clearBtn {
         width: 1000px;
         height: 50px;
         background-color: lightgrey;
@@ -40,89 +40,69 @@
 
 <body>
     <canvas width="1000px" height="700px" id="paint"></canvas>
-    <!-- <div class="percent-bar" id="kontrast">Invert Colors</div> -->
-    kontrast
-    <progress class="progressBar" id="invertColorProgressBar" value="0.5" max="1"></progress>
-    <!-- <div class="percent-bar" id="czarno-biale">Grayscale</div> -->
-    Grayscale
-    <progress class="progressBar" id="grayscaleProgressBar" value="0.5" max="1"></progress>
-    <div class="percent-bar" id="clear">Clear</div>
+    Jasność
+    <progress class="progressBar" id="brightnessProgressBar" value="0.5" max="1"></progress>
+    Czerń i biel
+    <progress class="progressBar" id="grayscaleProgressBar" value="0" max="1"></progress>
+    Kontrast
+    <progress class="progressBar" id="contrastProgressBar" value="0.5" max="1"></progress>
+    <div class="clearBtn" id="clear">Clear</div>
     <script>
         const canvasElem = document.querySelector('#paint');
         const ctx = canvasElem.getContext('2d');
         const img = new Image();
-
         const invertColors = document.getElementById('kontrast');
         const fromBlackToWhite = document.getElementById('czarno-biale');
         const clearImage = document.getElementById('clear');
 
 
+        // //zmiana jasności
 
-        // //zmiana kolorów na przeciwne
-        // invertColors.addEventListener('click',
-        //     function drawImage1() {
-        //         let imgData = ctx.getImageData(0, 0, img.width, img.height);
-        //         let data = imgData.data;
-        //         for (let i = 0; i < imgData.data.length; i += 4) {
-        //             imgData.data[i] = (255 - imgData.data[i])*0.9;//red
-        //             imgData.data[i + 1] = (255 - imgData.data[i + 1])*0.7;//green
-        //             imgData.data[i + 2] = (255 - imgData.data[i + 2])*0.5;//blue
-        //         }
-
-        //         ctx.putImageData(imgData, 0, 0);
-        //     })
-
-        document.getElementById('invertColorProgressBar').addEventListener('click',
+        document.getElementById('brightnessProgressBar').addEventListener('click',
             function (e) {
                 let x = e.pageX - this.offsetLeft;
-                let startPos = document.getElementById('invertColorProgressBar');
+                let startPos = document.getElementById('brightnessProgressBar');
                 let xConvert = x / 1000;
                 let xFinal = (xConvert).toFixed(1);
-
-                document.getElementById('invertColorProgressBar').value = xFinal;
-
+                if (xFinal < 0.5)
+                    xFinal = (xFinal * (-1)) / xFinal;
+                else if (xFinal == 0.5) {
+                    img.onload = function () {
+                        ctx.drawImage(img, 0, 0);
+                    };
+                    img.src = 'las.jpg';
+                }
+                document.getElementById('brightnessProgressBar').value = xFinal;
                 let imgData = ctx.getImageData(0, 0, img.width, img.height);
                 let data = imgData.data;
                 for (let i = 0; i < imgData.data.length; i += 4) {
-                    imgData.data[i] = 255 - imgData.data[i] * xFinal;//red
-                    imgData.data[i + 1] = 255 - imgData.data[i + 1] * xFinal;//green
-                    imgData.data[i + 2] = 255 - imgData.data[i + 2] * xFinal;//blue
+                    imgData.data[i] += 255 * (xFinal / 10);//red
+                    imgData.data[i + 1] += 255 * (xFinal / 10);//green
+                    imgData.data[i + 2] += 255 * (xFinal / 10);//blue
                 }
                 console.log(xFinal);
                 ctx.putImageData(imgData, 0, 0);
-
             })
 
 
-
-
         //zmiana na czarnobiałe
-        // fromBlackToWhite.addEventListener('click',
-        //     function drawImage2() {
-        //         let imgData = ctx.getImageData(0, 0, img.width, img.height);
-        //         let data = imgData.data;
-        //         for (let i = 0; i < imgData.data.length; i += 4) {
-        //             let brightness = 0.34 * imgData.data[i] + 0.5 * imgData.data[i + 1] + 0.16 * imgData.data[i + 2];
-        //             imgData.data[i] = brightness;
-        //             imgData.data[i + 1] = brightness;
-        //             imgData.data[i + 2] = brightness;
-        //         }
-
-        //         ctx.putImageData(imgData, 0, 0);
-        //     })
 
         document.getElementById('grayscaleProgressBar').addEventListener('click', function (e) {
             let x = e.pageX - this.offsetLeft;
             let startPos = document.getElementById('grayscaleProgressBar');
             let xConvert = x / 1000;
             let xFinal = (xConvert).toFixed(1);
-
+            if (xFinal == 0) {
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = 'las.jpg';
+            }
             document.getElementById('grayscaleProgressBar').value = xFinal;
-
             let imgData = ctx.getImageData(0, 0, img.width, img.height);
             let data = imgData.data;
             for (let i = 0; i < imgData.data.length; i += 4) {
-                let brightness = xFinal * imgData.data[i] + xFinal * imgData.data[i + 1] + xFinal * imgData.data[i + 2];
+                let brightness = (xFinal * 10) * imgData.data[i] + (xFinal * 10) * imgData.data[i + 1] + (xFinal * 10) * imgData.data[i + 2];
                 imgData.data[i] = brightness;
                 imgData.data[i + 1] = brightness;
                 imgData.data[i + 2] = brightness;
@@ -132,23 +112,40 @@
         })
 
 
+        document.getElementById('contrastProgressBar').addEventListener('click', function (e) {
+            let x = e.pageX - this.offsetLeft;
+            let startPos = document.getElementById('contrastProgressBar');
+            let xConvert = x / 1000;
+            let xFinal = (xConvert).toFixed(1);
+            document.getElementById('contrastProgressBar').value = xFinal;
+            let imgData = ctx.getImageData(0, 0, img.width, img.height);
+            let data = imgData.data;
+            let factor = (259 *( (xFinal*10) + 255))/ (255*(259 - (xFinal*10)));
+            for (let i = 0; i < imgData.data.length; i += 4) {
+                data[i] = truncate(factor * (data[i] - 128.0) + 128.0);
+                data[i + 1] = truncate(factor * (data[i + 1] - 128.0) + 128.0);
+                data[i + 2] = truncate(factor * (data[i + 2] - 128.0) + 128.0);
+            }
+            console.log(xFinal);
+            ctx.putImageData(imgData, 0, 0);
+        })
+
+
+
+
         //Wyczyszczenie canvasa
         clearImage.addEventListener('click',
             function clearImg() {
                 ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
             }, false)
-
-
         //ładowanie zdjęcia
         img.onload = function () {
             ctx.drawImage(img, 0, 0);
         };
-
         img.src = 'las.jpg';
     </script>
 </body>
 
-</script>
-</body>
+
 
 </html>
