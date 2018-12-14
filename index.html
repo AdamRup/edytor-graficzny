@@ -9,6 +9,7 @@
 </head>
 <style>
     body {
+        background-color: gray;
         margin: 0;
         padding: 0;
         display: flex;
@@ -18,12 +19,14 @@
     }
 
     canvas {
+        background: url("background.jpg");
+        margin-left: 50px;
         border: 2px solid black;
         display: block;
     }
 
     .clearBtn {
-        width: 1000px;
+        
         height: 50px;
         background-color: lightgrey;
         margin-top: 20px;
@@ -41,8 +44,21 @@
         margin-bottom: 10px;
     }
 
-    .photoSource, span{
+    #photoSource, span{
+        margin-left: 50px;
         font-size: 20px;
+        width: 100%;
+    }
+
+    #editor{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+    #switches{
+        margin-left: 20px;
+        display: flex;
+        flex-direction: column;
     }
 </style>
 
@@ -52,14 +68,21 @@
         <input type="text" name="sourceOfPhoto" id="sourceOfPhoto">
         <button type="button" id="loadButton" onclick="load()">Wczytaj</button>
     </div>
-    <canvas width="1000px" height="700px" id="paint"></canvas>
-    Jasność
-    <progress class="progressBar" id="brightnessProgressBar" value="0.5" max="1"></progress>
-    Czerń i biel
-    <progress class="progressBar" id="grayscaleProgressBar" value="0" max="1"></progress>
-    Kontrast
-    <progress class="progressBar" id="contrastProgressBar" value="0.5" max="1"></progress>
-    <div class="clearBtn" id="clear">Clear</div>
+    <div id="editor">
+        <div><canvas width="1000px" height="700px" id="paint"></canvas></div>
+        <div id="switches">
+            Jasność
+            <input type="range" id="brightnessSwitch" value="0" min="-100" max="100">
+            Czerń i biel
+            <input type="range" id="grayScaleSwitch" value="0" min="0" max="100">
+            Kontrast
+            <input type="range" id="contrastSwitch" value="0" min="-100" max="100">
+            <!-- <progress class="progressBar" id="contrastProgressBar" value="0.5" max="1"></progress> -->
+            <div class="clearBtn" id="clear">Clear </div>
+           
+        </div>
+
+    </div>
     <script>
         const canvasElem = document.querySelector('#paint');
         const ctx = canvasElem.getContext('2d');
@@ -82,56 +105,33 @@
         }
 
 
-        // //zmiana jasności
-        document.getElementById('brightnessProgressBar').addEventListener('click',
-            function (e) {
-                let x = e.pageX - this.offsetLeft;
-                let startPos = document.getElementById('brightnessProgressBar');
-                let xConvert = x / 1000;
-                let xFinal = (xConvert).toFixed(1);
-                if (xFinal < 0.5)
-                    xFinal = (xFinal * (-1)) / xFinal;
-                else if (xFinal == 0.5) {
-                    img.onload = function () {
-                        ctx.drawImage(img, 0, 0);
-                    };
-                    img.src = 'las.jpg';
-                }
-                document.getElementById('brightnessProgressBar').value = xFinal;
+        //zmiana jasności
+        document.getElementById('brightnessSwitch').addEventListener('change',
+            function () {
+                let val = document.getElementById('brightnessSwitch').value;
                 let imgData = ctx.getImageData(0, 0, img.width, img.height);
                 let data = imgData.data;
                 for (let i = 0; i < imgData.data.length; i += 4) {
-                    imgData.data[i] += 255 * (xFinal / 10);//red
-                    imgData.data[i + 1] += 255 * (xFinal / 10);//green
-                    imgData.data[i + 2] += 255 * (xFinal / 10);//blue
+                    imgData.data[i] += 255 * (val / 1000);//red
+                    imgData.data[i + 1] += 255 * (val / 1000);//green
+                    imgData.data[i + 2] += 255 * (val / 1000);//blue
                 }
-                console.log(xFinal);
+                console.log(val / 10);
                 ctx.putImageData(imgData, 0, 0);
             })
 
-
         //zmiana na czarnobiałe
-        document.getElementById('grayscaleProgressBar').addEventListener('click', function (e) {
-            let x = e.pageX - this.offsetLeft;
-            let startPos = document.getElementById('grayscaleProgressBar');
-            let xConvert = x / 1000;
-            let xFinal = (xConvert).toFixed(1);
-            if (xFinal == 0) {
-                img.onload = function () {
-                    ctx.drawImage(img, 0, 0);
-                };
-                img.src = 'las.jpg';
-            }
-            document.getElementById('grayscaleProgressBar').value = xFinal;
+        document.getElementById('grayScaleSwitch').addEventListener('change', function () {
+            let val = document.getElementById('grayScaleSwitch').value;
             let imgData = ctx.getImageData(0, 0, img.width, img.height);
             let data = imgData.data;
             for (let i = 0; i < imgData.data.length; i += 4) {
-                let brightness = xFinal * imgData.data[i] + xFinal * imgData.data[i + 1] + xFinal * imgData.data[i + 2];
+                let brightness = (val / 100) * imgData.data[i] + (val / 100) * imgData.data[i + 1] + (val / 100) * imgData.data[i + 2];
                 imgData.data[i] = brightness;
                 imgData.data[i + 1] = brightness;
                 imgData.data[i + 2] = brightness;
             }
-            console.log(xFinal);
+            console.log(val);
             ctx.putImageData(imgData, 0, 0);
         })
 
@@ -142,29 +142,17 @@
             return value;
         }
 
-        document.getElementById('contrastProgressBar').addEventListener('click', function (e) {
-            let x = e.pageX - this.offsetLeft;
-            let startPos = document.getElementById('contrastProgressBar');
-            let xConvert = x / 1000;
-            let xFinal = (xConvert).toFixed(1);
-            if (xFinal < 0.5)
-                xFinal = (xFinal * (-1)) / xFinal;
-            else if (xFinal == 0.5) {
-                img.onload = function () {
-                    ctx.drawImage(img, 0, 0);
-                };
-                img.src = 'las.jpg';
-            }
-            document.getElementById('contrastProgressBar').value = xFinal;
+        document.getElementById('contrastSwitch').addEventListener('change', function () {
+            let val = document.getElementById('contrastSwitch').value;
             let imgData = ctx.getImageData(0, 0, img.width, img.height);
             let data = imgData.data;
             for (let i = 0; i < imgData.data.length; i += 4) {
-                let factor = (259.0 * ((xFinal * 10) + 255.0)) / (255.0 * (259.0 - (xFinal * 10)));
+                let factor = (259.0 * ((val / 10) + 255.0)) / (255.0 * (259.0 - (val / 10)));
                 data[i] = truncate(factor * (data[i] - 128.0) + 128.0);
                 data[i + 1] = truncate(factor * (data[i + 1] - 128.0) + 128.0);
                 data[i + 2] = truncate(factor * (data[i + 2] - 128.0) + 128.0);
             }
-            console.log(xFinal);
+            console.log(val);
             ctx.putImageData(imgData, 0, 0);
         })
     </script>
