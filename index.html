@@ -55,33 +55,49 @@
         display: flex;
         flex-direction: ;
     }
+
+    #settings{
+        display: flex;
+        flex-direction: column;
+    }
     #switches{
         margin-left: 20px;
         display: flex;
         flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    #drawSettings{
+        margin-left: 20px;
+        display: flex;
+        flex-direction: row;
     }
 
     #redColor{
         width: 20px;
         height: 20px;
+        margin-right: 15px;
         background-color: red;
     }
 
     #greenColor{
         width: 20px;
         height: 20px;
+        margin-right: 15px;
         background-color: green;
     }
 
     #blueColor{
         width: 20px;
         height: 20px;
+        margin-right: 15px;
         background-color: blue;
     }
 
     #blackColor{
         width: 20px;
         height: 20px;
+        margin-right: 15px;
         background-color: black;
     }
 
@@ -100,74 +116,104 @@
     </div>
     <div id="editor">
         <div><canvas width="1000px" height="700px" id="paint"></canvas></div>
-        <div id="switches">
-            Jasność
-            <input type="range" id="brightnessSwitch" value="0" min="-100" max="100">
-            Czerń i biel
-            <input type="range" id="grayScaleSwitch" value="0" min="0" max="100">
-            Kontrast
-            <input type="range" id="contrastSwitch" value="0" min="-100" max="100">
-            Nasycenie
-            <input type="range" id="saturationSwitch" value="0" min="-100" max="100">
-            <div class="clearBtn" id="clear">Clear </div>
-        </div>
-        <div id="drawSettings">
-            <div id="redColor"></div>
-            <div id="greenColor"></div>
-            <div id="blueColor" ></div>
-            <div id="blackColor"></div>
-            <div id="whiteColor"></div>
+        <div id="settings">
+            <div id="switches">
+                Jasność
+                <input type="range" id="brightnessSwitch" value="0" min="-100" max="100">
+                Czerń i biel
+                <input type="range" id="grayScaleSwitch" value="0" min="0" max="100">
+                Kontrast
+                <input type="range" id="contrastSwitch" value="0" min="-100" max="100">
+                Nasycenie
+                <input type="range" id="saturationSwitch" value="0" min="-100" max="100">
+                <div class="clearBtn" id="clear">Clear </div>
+            </div>
+            <div id="drawSettings">
+                Wybierz kolor pędzla
+                <div class="color" id="redColor" data-color='red'></div>
+                <div class="color" id="greenColor" data-color='green'></div>
+                <div class="color" id="blueColor" data-color='blue'></div>
+                <div class="color" id="blackColor" data-color='black'></div>
+                <div class="color" id="whiteColor" data-color='white'></div>
+            </div>
         </div>
     </div>
     <script>
         const canvasElem = document.querySelector('#paint');
         const ctx = canvasElem.getContext('2d');
         //rysowanie start
-        let md = false;
-
-        //zmienne kolorów
-        let red = document.getElementById('redColor') = 'red';
-        let green = document.getElementById('greenColor') = 'green';
-        let blue = document.getElementById('blueColor') = 'blue';
-        let black = document.getElementById('blackColor') = 'black';
-        let white = document.getElementById('whiteColor') = 'white';
-
-
-
+        let isClicked = false;//zmienna typu bool sprawdzająca czy nastąpiło kliknięcie przycisku myszy
         canvasElem.addEventListener('mousedown', down);
         canvasElem.addEventListener('mouseup', toggledraw);
         canvasElem.addEventListener('mousemove',
-            function(e){
+            function (e) {
                 let mousePosition = getMousePosition(canvasElem, e);
                 let positionX = mousePosition.x;
                 let positionY = mousePosition.y;
                 draw(canvasElem, positionX, positionY);
                 console.log('poruszenie')
-             });
+            });
 
-        
 
-        function down(){
-            md = true;
-            console.log(md);
+
+        function down() {
+            isClicked = true;
+            console.log(isClicked);
         }
-        function toggledraw(){
-            md = false;
-            console.log(md);
+        function toggledraw() {
+            isClicked = false;
+            console.log(isClicked);
         }
 
-        function getMousePosition(canvasElem, e){
+        const redColorVal = document.getElementById('redColor');
+        const greenColorVal = document.getElementById('greenColor');
+        const blueColorVal = document.getElementById('blueColor');
+        const blackColorVal = document.getElementById('blackColor');
+        const whiteColorVal = document.getElementById('whiteColor');
+
+        let colorVal;//zmnienna przechowująca kolor, którym będziemy rysować
+        redColorVal.addEventListener('click', redColor);
+        greenColorVal.addEventListener('click', greenColor);
+        blueColorVal.addEventListener('click', blueColor);
+        blackColorVal.addEventListener('click', blackColor);
+        whiteColorVal.addEventListener('click', whiteColor);
+
+
+        function redColor() {
+            colorVal = redColorVal.dataset.color;//przypisanie zmiennej colorVal koloru czerwonego
+            console.log(colorVal);
+        }
+        function greenColor() {
+            colorVal = greenColorVal.dataset.color;//przypisanie zmiennej colorVal koloru zielonego
+            console.log(colorVal);
+        }
+        function blueColor() {
+            colorVal = blueColorVal.dataset.color;//przypisanie zmiennej colorVal koloru niebieskiego
+            console.log(colorVal);
+        }
+        function blackColor() {
+            colorVal = blackColorVal.dataset.color;//przypisanie zmiennej colorVal koloru czarnego
+            console.log(colorVal);
+        }
+        function whiteColor() {
+            colorVal = whiteColorVal.dataset.color;//przypisanie zmiennej colorVal koloru białego
+            console.log(colorVal);
+        }
+
+        function getMousePosition(canvasElem, e) {
             let rect = canvasElem.getBoundingClientRect();
-            return{
-                x:e.clientX - rect.left,
-                y:e.clientY - rect.top 
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
             };
         }
-        function draw(canvasElem, positionX, positionY){
+        function draw(canvasElem, positionX, positionY) {
             let ctx = canvasElem.getContext('2d');
-            if(md==true){
+            let color = document.querySelector('color');
+
+            if (isClicked == true) {
                 ctx.fillRect(positionX, positionY, 4, 4);
-                ctx.fillStyle = "red";
+                ctx.fillStyle = colorVal;
                 ctx.stroke();
             }
         }
@@ -257,11 +303,11 @@
                         imgData.data[i + 2] -= val;//blue
                     }
                 }
-                else if(val>0){
+                else if (val > 0) {
                     for (let i = 0; i < imgData.data.length; i += 4) {
-                        imgData.data[i] -= (val/10);//red
-                        imgData.data[i + 1] -= (val/10);//green
-                        imgData.data[i + 2] -= (val/10);//blue
+                        imgData.data[i] -= (val / 10);//red
+                        imgData.data[i + 1] -= (val / 10);//green
+                        imgData.data[i + 2] -= (val / 10);//blue
                     }
                 }
 
