@@ -53,12 +53,42 @@
     #editor{
         width: 100%;
         display: flex;
-        flex-direction: row;
+        flex-direction: ;
     }
     #switches{
         margin-left: 20px;
         display: flex;
         flex-direction: column;
+    }
+
+    #redColor{
+        width: 20px;
+        height: 20px;
+        background-color: red;
+    }
+
+    #greenColor{
+        width: 20px;
+        height: 20px;
+        background-color: green;
+    }
+
+    #blueColor{
+        width: 20px;
+        height: 20px;
+        background-color: blue;
+    }
+
+    #blackColor{
+        width: 20px;
+        height: 20px;
+        background-color: black;
+    }
+
+    #whiteColor{
+        width: 20px;
+        height: 20px;
+        background-color: white;
     }
 </style>
 
@@ -77,21 +107,81 @@
             <input type="range" id="grayScaleSwitch" value="0" min="0" max="100">
             Kontrast
             <input type="range" id="contrastSwitch" value="0" min="-100" max="100">
-            <!-- <progress class="progressBar" id="contrastProgressBar" value="0.5" max="1"></progress> -->
+            Nasycenie
+            <input type="range" id="saturationSwitch" value="0" min="-100" max="100">
             <div class="clearBtn" id="clear">Clear </div>
-           
         </div>
-
+        <div id="drawSettings">
+            <div id="redColor"></div>
+            <div id="greenColor"></div>
+            <div id="blueColor" ></div>
+            <div id="blackColor"></div>
+            <div id="whiteColor"></div>
+        </div>
     </div>
     <script>
         const canvasElem = document.querySelector('#paint');
         const ctx = canvasElem.getContext('2d');
+        //rysowanie start
+        let md = false;
+
+        //zmienne kolorów
+        let red = document.getElementById('redColor') = 'red';
+        let green = document.getElementById('greenColor') = 'green';
+        let blue = document.getElementById('blueColor') = 'blue';
+        let black = document.getElementById('blackColor') = 'black';
+        let white = document.getElementById('whiteColor') = 'white';
+
+
+
+        canvasElem.addEventListener('mousedown', down);
+        canvasElem.addEventListener('mouseup', toggledraw);
+        canvasElem.addEventListener('mousemove',
+            function(e){
+                let mousePosition = getMousePosition(canvasElem, e);
+                let positionX = mousePosition.x;
+                let positionY = mousePosition.y;
+                draw(canvasElem, positionX, positionY);
+                console.log('poruszenie')
+             });
+
+        
+
+        function down(){
+            md = true;
+            console.log(md);
+        }
+        function toggledraw(){
+            md = false;
+            console.log(md);
+        }
+
+        function getMousePosition(canvasElem, e){
+            let rect = canvasElem.getBoundingClientRect();
+            return{
+                x:e.clientX - rect.left,
+                y:e.clientY - rect.top 
+            };
+        }
+        function draw(canvasElem, positionX, positionY){
+            let ctx = canvasElem.getContext('2d');
+            if(md==true){
+                ctx.fillRect(positionX, positionY, 4, 4);
+                ctx.fillStyle = "red";
+                ctx.stroke();
+            }
+        }
+        //rysowanie koniec
         const img = new Image();
         const clearImage = document.getElementById('clear');
 
         //wyczyszczenie canvasa
         clearImage.addEventListener('click',
             function clearImg() {
+                document.getElementById('brightnessSwitch').value = '0';
+                document.getElementById('grayScaleSwitch').value = '0';
+                document.getElementById('contrastSwitch').value = '0';
+                document.getElementById('saturationSwitch').value = '0';
                 ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
             }, false)
 
@@ -116,8 +206,7 @@
                     imgData.data[i + 1] += 255 * (val / 1000);//green
                     imgData.data[i + 2] += 255 * (val / 1000);//blue
                 }
-                console.log(val / 10);
-                ctx.putImageData(imgData, 0, 0);
+                let imgOut = ctx.putImageData(imgData, 0, 0);
             })
 
         //zmiana na czarnobiałe
@@ -131,8 +220,7 @@
                 imgData.data[i + 1] = brightness;
                 imgData.data[i + 2] = brightness;
             }
-            console.log(val);
-            ctx.putImageData(imgData, 0, 0);
+            let imgOut = ctx.putImageData(imgData, 0, 0);
         })
 
         //zmiana kontrastu
@@ -152,9 +240,33 @@
                 data[i + 1] = truncate(factor * (data[i + 1] - 128.0) + 128.0);
                 data[i + 2] = truncate(factor * (data[i + 2] - 128.0) + 128.0);
             }
-            console.log(val);
-            ctx.putImageData(imgData, 0, 0);
+            let imgOut = ctx.putImageData(imgData, 0, 0);
         })
+
+
+        //zmiana nasycenia
+        document.getElementById('saturationSwitch').addEventListener('change',
+            function () {
+                let val = document.getElementById('saturationSwitch').value;
+                let imgData = ctx.getImageData(0, 0, img.width, img.height);
+                let data = imgData.data;
+                if (val < 0) {
+                    for (let i = 0; i < imgData.data.length; i += 4) {
+                        imgData.data[i] -= val;//red
+                        imgData.data[i + 1] -= val;//green
+                        imgData.data[i + 2] -= val;//blue
+                    }
+                }
+                else if(val>0){
+                    for (let i = 0; i < imgData.data.length; i += 4) {
+                        imgData.data[i] -= (val/10);//red
+                        imgData.data[i + 1] -= (val/10);//green
+                        imgData.data[i + 2] -= (val/10);//blue
+                    }
+                }
+
+                let imgOut = ctx.putImageData(imgData, 0, 0);
+            })
     </script>
 </body>
 
