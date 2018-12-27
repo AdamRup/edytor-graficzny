@@ -18,6 +18,18 @@
         align-items: center;
     }
 
+    .btn{
+        width: 100px;
+        height: 25px;
+        background-color: lightgray;
+        border-radius: 7px;
+        box-shadow: 1px 1px 1px 1px black;
+    }
+
+    .btn:hover{
+        background-color: gray;
+    }
+
     canvas {
         background: url("background.jpg");
         margin-left: 50px;
@@ -25,21 +37,11 @@
         display: block;
     }
 
-    .clearBtn {
-        
-        height: 50px;
-        background-color: lightgrey;
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
     .progressBar {
         width: 1000px;
     }
 
-    .photoSource{
+    #photoSource{
         margin-top: 10px;
         margin-bottom: 10px;
     }
@@ -53,7 +55,7 @@
     #editor{
         width: 100%;
         display: flex;
-        flex-direction: ;
+        flex-direction: row;
     }
 
     #settings{
@@ -70,12 +72,24 @@
     #drawSettings{
         margin-left: 20px;
         display: flex;
+        flex-direction: column;
+    }
+
+    .colors{
+        display: flex;
         flex-direction: row;
+        margin-bottom: 20px;
+    }
+
+    #brushSizeSelect{
+        display: flex;
+        flex-direction: column;
     }
 
     #redColor{
         width: 20px;
         height: 20px;
+        border: 2px solid darkgray;
         margin-right: 15px;
         background-color: red;
     }
@@ -83,6 +97,7 @@
     #greenColor{
         width: 20px;
         height: 20px;
+        border: 2px solid darkgray;
         margin-right: 15px;
         background-color: green;
     }
@@ -90,6 +105,7 @@
     #blueColor{
         width: 20px;
         height: 20px;
+        border: 2px solid darkgray;
         margin-right: 15px;
         background-color: blue;
     }
@@ -97,6 +113,7 @@
     #blackColor{
         width: 20px;
         height: 20px;
+        border: 2px solid black;
         margin-right: 15px;
         background-color: black;
     }
@@ -104,7 +121,77 @@
     #whiteColor{
         width: 20px;
         height: 20px;
+        border: 2px solid darkgray;
         background-color: white;
+    }
+    #yellowColor{
+        width: 20px;
+        height: 20px;
+        border: 2px solid darkgray;
+        margin-right: 15px;
+        background-color: yellow;
+    }
+    #grayColor{
+        width: 20px;
+        height: 20px;
+        border: 2px solid darkgray;
+        margin-right: 15px;
+        background-color: gray;
+    }
+    #purpleColor{
+        width: 20px;
+        height: 20px;
+        border: 2px solid darkgray;
+        margin-right: 15px;
+        background-color: purple;
+    }
+    #orangeColor{
+        width: 20px;
+        height: 20px;
+        border: 2px solid darkgray;
+        margin-right: 15px;
+        background-color: orange;
+    }
+    #pinkColor{
+        width: 20px;
+        height: 20px;
+        border: 2px solid darkgray;
+        background-color: pink;
+    }
+    p{
+        margin-left: 20px;
+    }
+
+    input[type=range]{
+        -webkit-appearance: none;
+        appearance: none;
+        background: black;
+        border-radius: 25px;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover{
+        background: green;
+    }
+
+    input[type=range]::-moz-range-thumb{
+        background: lightgreen;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;;
+    }
+
+    input[type=range]::-webkit-slider-thumb{
+        background: lightgreen;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;;
+        -webkit-appearance: none;
+        appearance: none;
+        border-radius: 50%;
+    }
+
+    input[type=text]{
+        border-radius: 50px;
     }
 </style>
 
@@ -112,7 +199,7 @@
     <div id="photoSource">
         <span>Podaj ściekę do zdjęcia:</span>
         <input type="text" name="sourceOfPhoto" id="sourceOfPhoto">
-        <button type="button" id="loadButton" onclick="load()">Wczytaj</button>
+        <button type="button" id="loadButton" class="btn" onclick="load()">Wczytaj</button>
     </div>
     <div id="editor">
         <div><canvas width="1000px" height="700px" id="paint"></canvas></div>
@@ -126,15 +213,29 @@
                 <input type="range" id="contrastSwitch" value="0" min="-100" max="100">
                 Nasycenie
                 <input type="range" id="saturationSwitch" value="0" min="-100" max="100">
-                <div class="clearBtn" id="clear">Clear </div>
+                <button id="clearButton" class="btn">Wyczyść</button>
             </div>
+            <p>Wybierz kolor pędzla</p>
             <div id="drawSettings">
-                Wybierz kolor pędzla
-                <div class="color" id="redColor" data-color='red'></div>
-                <div class="color" id="greenColor" data-color='green'></div>
-                <div class="color" id="blueColor" data-color='blue'></div>
-                <div class="color" id="blackColor" data-color='black'></div>
-                <div class="color" id="whiteColor" data-color='white'></div>
+                <div class="colors">
+                    <div class="color" id="blackColor" data-color='black'></div>
+                    <div class="color" id="redColor" data-color='red'></div>
+                    <div class="color" id="greenColor" data-color='green'></div>
+                    <div class="color" id="blueColor" data-color='blue'></div>
+                    <div class="color" id="whiteColor" data-color='white'></div>
+                </div>
+                <div class="colors">
+                    <div class="color" id="yellowColor" data-color='yellow'></div>
+                    <div class="color" id="grayColor" data-color='gray'></div>
+                    <div class="color" id="purpleColor" data-color='purple'></div>
+                    <div class="color" id="orangeColor" data-color='orange'></div>
+                    <div class="color" id="pinkColor" data-color='pink'></div>
+                </div>
+                <div id="brushSizeSelect">
+                    Rozmiar pędzla
+                    <input type="range" id="brushSize" min="4" max="20" value="4">
+                </div>
+
             </div>
         </div>
     </div>
@@ -151,18 +252,13 @@
                 let positionX = mousePosition.x;
                 let positionY = mousePosition.y;
                 draw(canvasElem, positionX, positionY);
-                console.log('poruszenie')
             });
-
-
 
         function down() {
             isClicked = true;
-            console.log(isClicked);
         }
         function toggledraw() {
             isClicked = false;
-            console.log(isClicked);
         }
 
         const redColorVal = document.getElementById('redColor');
@@ -170,6 +266,11 @@
         const blueColorVal = document.getElementById('blueColor');
         const blackColorVal = document.getElementById('blackColor');
         const whiteColorVal = document.getElementById('whiteColor');
+        const yellowColorVal = document.getElementById('yellowColor');
+        const grayColorVal = document.getElementById('grayColor');
+        const purpleColorVal = document.getElementById('purpleColor');
+        const orangeColorVal = document.getElementById('orangeColor');
+        const pinkColorVal = document.getElementById('pinkColor');
 
         let colorVal;//zmnienna przechowująca kolor, którym będziemy rysować
         redColorVal.addEventListener('click', redColor);
@@ -177,26 +278,150 @@
         blueColorVal.addEventListener('click', blueColor);
         blackColorVal.addEventListener('click', blackColor);
         whiteColorVal.addEventListener('click', whiteColor);
-
+        yellowColorVal.addEventListener('click', yellowColor);
+        grayColorVal.addEventListener('click', grayColor);
+        purpleColorVal.addEventListener('click', purpleColor);
+        orangeColorVal.addEventListener('click', orangeColor);
+        pinkColorVal.addEventListener('click', pinkColor);
 
         function redColor() {
             colorVal = redColorVal.dataset.color;//przypisanie zmiennej colorVal koloru czerwonego
+            redColorVal.style.border = 'solid 2px black';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
             console.log(colorVal);
         }
         function greenColor() {
             colorVal = greenColorVal.dataset.color;//przypisanie zmiennej colorVal koloru zielonego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px black';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
             console.log(colorVal);
         }
         function blueColor() {
             colorVal = blueColorVal.dataset.color;//przypisanie zmiennej colorVal koloru niebieskiego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px black';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
             console.log(colorVal);
         }
         function blackColor() {
             colorVal = blackColorVal.dataset.color;//przypisanie zmiennej colorVal koloru czarnego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px black';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
             console.log(colorVal);
         }
         function whiteColor() {
             colorVal = whiteColorVal.dataset.color;//przypisanie zmiennej colorVal koloru białego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px black';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
+            console.log(colorVal);
+        }
+        function yellowColor() {
+            colorVal = yellowColorVal.dataset.color;//przypisanie zmiennej colorVal koloru żółtego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px black';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
+            console.log(colorVal);
+        }
+        function grayColor() {
+            colorVal = grayColorVal.dataset.color;//przypisanie zmiennej colorVal koloru szarego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px black';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
+            console.log(colorVal);
+        }
+        function purpleColor() {
+            colorVal = purpleColorVal.dataset.color;//przypisanie zmiennej colorVal koloru fioletowego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px black';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px darkgray';
+            console.log(colorVal);
+        }
+        function orangeColor() {
+            colorVal = orangeColorVal.dataset.color;//przypisanie zmiennej colorVal koloru pomarańczowego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px black';
+            pinkColorVal.style.border = 'solid 2px darkgray';
+            console.log(colorVal);
+        }
+        function pinkColor() {
+            colorVal = pinkColorVal.dataset.color;//przypisanie zmiennej colorVal koloru różowego
+            redColorVal.style.border = 'solid 2px darkgray';
+            greenColorVal.style.border = 'solid 2px darkgray';
+            blueColorVal.style.border = 'solid 2px darkgray';
+            blackColorVal.style.border = 'solid 2px darkgray';
+            whiteColorVal.style.border = 'solid 2px darkgray';
+            yellowColorVal.style.border = 'solid 2px darkgray';
+            grayColorVal.style.border = 'solid 2px darkgray';
+            purpleColorVal.style.border = 'solid 2px darkgray';
+            orangeColorVal.style.border = 'solid 2px darkgray';
+            pinkColorVal.style.border = 'solid 2px black';
             console.log(colorVal);
         }
 
@@ -210,16 +435,17 @@
         function draw(canvasElem, positionX, positionY) {
             let ctx = canvasElem.getContext('2d');
             let color = document.querySelector('color');
+            let val = document.getElementById('brushSize').value;
 
             if (isClicked == true) {
-                ctx.fillRect(positionX, positionY, 4, 4);
+                ctx.fillRect(positionX, positionY, val, val);
                 ctx.fillStyle = colorVal;
                 ctx.stroke();
             }
         }
-        //rysowanie koniec
+
         const img = new Image();
-        const clearImage = document.getElementById('clear');
+        const clearImage = document.getElementById('clearButton');
 
         //wyczyszczenie canvasa
         clearImage.addEventListener('click',
